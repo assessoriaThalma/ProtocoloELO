@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo Elo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0708;
+    --bg-2:#150a0d;
+    --maroon-deep:#2a0f16;
+    --rose-cta:#a5395a;
+    --rose-cta-light:#c04b6d;
+    --rose-soft:#e0a3b6;
+    --rose-eyebrow:#d98ca0;
+    --line-pink:#7a2836;
+    --line-pink-bright:#c85c77;
+    --ink:#f3ede8;
+    --body-gray:#c2bcb9;
+    --muted-gray:#8f8886;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--body-gray);
+    font-family:'Poppins',sans-serif;
+    font-weight:300;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 28px;}
+  img,video{max-width:100%; display:block;}
+
+  .eyebrow{
+    font-family:'Poppins',sans-serif;
+    font-size:12px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    color:var(--muted-gray);
+    font-weight:500;
+  }
+  .eyebrow.pink{color:var(--rose-eyebrow);}
+
+  h1,h2,h3{
+    font-family:'Playfair Display',serif;
+    color:var(--ink);
+    font-weight:600;
+    line-height:1.15;
+  }
+  em, .italic{font-style:italic; font-weight:400; color:var(--rose-cta-light);}
+
+  .badge{
+    display:inline-block;
+    border:1px solid var(--line-pink-bright);
+    color:var(--rose-eyebrow);
+    font-size:11px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    padding:8px 16px;
+    border-radius:2px;
+    margin-bottom:22px;
+  }
+
+  /* HERO */
+  .hero{
+    padding:64px 0 40px;
+    background:
+      radial-gradient(ellipse at top, rgba(168,63,88,0.18), transparent 60%),
+      var(--bg);
+    text-align:left;
+  }
+  .logo-mark{
+    display:flex; align-items:center; gap:10px; margin-bottom:28px;
+  }
+  .logo-mark .flame{font-size:22px;}
+  .logo-mark span{
+    font-family:'Poppins',sans-serif; font-size:12px; letter-spacing:3px;
+    text-transform:uppercase; color:var(--muted-gray);
+  }
+  .hero h1{font-size:44px; margin-bottom:6px;}
+  .hero .subline{
+    font-size:15px; letter-spacing:1px; color:var(--rose-eyebrow); margin:18px 0 22px;
+  }
+  .hero p{font-size:15.5px; color:var(--body-gray); margin-bottom:16px;}
+  .hero p strong{color:var(--ink); font-weight:500;}
+
+  .cta-btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    background:var(--rose-cta);
+    color:var(--ink);
+    font-family:'Poppins',sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:20px 22px;
+    border-radius:2px;
+    margin:26px 0 12px;
+    transition:background .2s ease;
+  }
+  .cta-btn:hover{background:var(--rose-cta-light);}
+  .micro{font-size:12px; color:var(--muted-gray); letter-spacing:.3px;}
+
+  /* FEATURE ROW */
+  .features{
+    border-top:1px solid #1c1214;
+    border-bottom:1px solid #1c1214;
+    padding:6px 0;
+  }
+  .feature{
+    display:flex; align-items:center; gap:16px;
+    padding:20px 0;
+    border-bottom:1px solid #1c1214;
+  }
+  .feature:last-child{border-bottom:none;}
+  .feature .ic{font-size:20px; width:28px; text-align:center;}
+  .feature span{
+    font-family:'Poppins',sans-serif; font-size:12.5px; font-weight:600;
+    letter-spacing:1.5px; text-transform:uppercase; color:var(--ink);
+  }
+
+  /* CALLOUT PANEL */
+  .panel{
+    background:linear-gradient(180deg, var(--maroon-deep) 0%, #180b0e 100%);
+    padding:40px 28px;
+    text-align:center;
+    margin:0;
+  }
+  .panel .sym{font-size:20px; color:var(--rose-eyebrow); opacity:.7;}
+  .panel-row{display:flex; align-items:center; justify-content:center; gap:22px; margin-bottom:16px;}
+  .panel h3{font-size:22px; margin-bottom:14px; color:var(--ink);}
+  .panel p{font-size:14.5px; max-width:520px; margin:0 auto; color:var(--body-gray);}
+  .panel .elo-icon{margin-bottom:18px;}
+  .panel .elo-tag{
+    font-family:'Poppins',sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--rose-eyebrow); font-weight:600; margin-bottom:10px;
+  }
+  .panel .divide{font-size:14px; color:var(--body-gray); max-width:520px; margin:16px auto 0; padding-top:16px; border-top:1px solid #351720;}
+
+  .scarcity-note{
+    border:1px solid var(--line-pink-bright);
+    background:rgba(165,57,90,0.08);
+    border-radius:3px;
+    padding:20px 22px;
+    margin:0 0 40px;
+    font-size:14px;
+    color:var(--body-gray);
+  }
+  .scarcity-note strong{color:var(--ink); font-weight:600;}
+
+  /* STAT */
+  .stat{padding:52px 0; text-align:center;}
+  .stat .num{
+    font-family:'Playfair Display',serif; font-size:52px; color:var(--rose-eyebrow);
+    font-weight:600; line-height:1;
+  }
+  .stat .label{
+    margin-top:10px; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--muted-gray);
+  }
+
+  /* QUOTE */
+  .quote{
+    border-left:2px solid var(--line-pink-bright);
+    padding:6px 0 6px 22px;
+    margin:0 0 48px;
+  }
+  .quote p{
+    font-family:'Playfair Display',serif; font-style:italic; font-size:19px;
+    color:var(--ink); line-height:1.5;
+  }
+  .quote .attrib{
+    margin-top:14px; font-family:'Poppins',sans-serif; font-style:normal;
+    font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted-gray);
+  }
+
+  /* SECTION GENERIC */
+  section{padding:46px 0;}
+  .section-title{font-size:30px; margin-bottom:18px;}
+  .section-lede{font-size:15.5px; margin-bottom:28px;}
+
+  /* NUMBERED PAIN POINTS */
+  .pain-item{
+    border-bottom:1px solid #241416;
+    padding:26px 0;
+  }
+  .pain-item:first-child{border-top:1px solid #241416;}
+  .pain-item .n{
+    font-family:'Playfair Display',serif; font-size:34px; color:var(--line-pink); font-weight:600;
+    line-height:1; margin-bottom:8px; display:block;
+  }
+  .pain-item h4{
+    font-family:'Poppins',sans-serif; font-size:13.5px; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--ink); font-weight:600; margin-bottom:8px;
+  }
+  .pain-item p{font-size:14.5px;}
+
+  /* TRACK CARDS (o que está incluso) */
+  .track{
+    background:#120a0c;
+    border:1px solid #26161a;
+    border-radius:4px;
+    padding:30px 26px;
+    margin-bottom:22px;
+  }
+  .track .track-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+  .track .track-tag{
+    font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--rose-eyebrow); font-weight:600;
+  }
+  .track h3{font-size:23px; margin:6px 0 4px;}
+  .track .who{font-size:13px; color:var(--muted-gray); margin-bottom:18px;}
+  .track ul{list-style:none; padding:0;}
+  .track li{
+    font-size:14.5px; color:var(--body-gray); padding:10px 0 10px 24px; position:relative;
+    border-top:1px solid #1e1113;
+  }
+  .track li:first-child{border-top:none;}
+  .track li::before{
+    content:"—"; position:absolute; left:0; color:var(--rose-cta-light);
+  }
+  .track-total{
+    text-align:center; font-family:'Poppins',sans-serif; font-size:13px; letter-spacing:1.5px;
+    text-transform:uppercase; color:var(--rose-eyebrow); font-weight:600; margin:8px 0 40px;
+    padding:16px; border:1px solid var(--line-pink); border-radius:2px;
+  }
+
+  /* PRICE */
+  .price-block{
+    background:linear-gradient(180deg, #180b0e 0%, var(--maroon-deep) 60%, #180b0e 100%);
+    padding:52px 28px;
+    text-align:center;
+  }
+  .price-block .badge{margin-bottom:20px;}
+  .price-block h2{font-size:28px; margin-bottom:8px;}
+  .old-price{
+    font-size:17px; color:var(--muted-gray); text-decoration:line-through; margin:18px 0 2px;
+  }
+  .new-price{
+    font-family:'Playfair Display',serif; font-size:54px; color:var(--ink); font-weight:600; margin-bottom:4px;
+  }
+  .new-price sup{font-size:22px; vertical-align:top; top:6px; position:relative;}
+  .price-note{font-size:12.5px; color:var(--rose-eyebrow); letter-spacing:1px; margin-bottom:28px;}
+
+  .countdown{
+    display:flex; justify-content:center; gap:14px; margin:26px 0 30px;
+  }
+  .countdown .box{
+    background:#0b0708; border:1px solid var(--line-pink); border-radius:3px;
+    padding:12px 14px; min-width:64px;
+  }
+  .countdown .box .val{font-family:'Playfair Display',serif; font-size:26px; color:var(--ink); font-weight:600;}
+  .countdown .box .lbl{font-size:9.5px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted-gray); margin-top:4px;}
+
+  /* REASONS LIST */
+  .reasons{padding:46px 0 60px;}
+  .reason{
+    display:flex; gap:16px; padding:20px 0; border-top:1px solid #201214;
+  }
+  .reason:last-child{border-bottom:1px solid #201214;}
+  .reason .r-n{
+    font-family:'Playfair Display',serif; font-style:italic; color:var(--rose-eyebrow); font-size:20px; min-width:26px;
+  }
+  .reason h4{font-size:14.5px; color:var(--ink); font-weight:600; margin-bottom:5px; font-family:'Poppins',sans-serif;}
+  .reason p{font-size:14px;}
+
+  footer{
+    text-align:center; padding:36px 28px 60px; font-size:11.5px; color:var(--muted-gray);
+  }
+
+  .sticky-cta{
+    position:sticky; bottom:0; left:0; right:0;
+    background:rgba(11,7,8,0.96);
+    backdrop-filter:blur(4px);
+    border-top:1px solid var(--line-pink);
+    padding:12px 20px;
+    z-index:50;
+  }
+  .sticky-cta .wrap{max-width:760px; display:flex; align-items:center; justify-content:space-between; gap:14px; padding:0;}
+  .sticky-cta .txt{font-size:11.5px; color:var(--rose-eyebrow); letter-spacing:.5px;}
+  .sticky-cta a{
+    background:var(--rose-cta); color:var(--ink); text-decoration:none; font-size:12px; font-weight:600;
+    letter-spacing:1px; text-transform:uppercase; padding:12px 18px; border-radius:2px; white-space:nowrap;
+  }
+
+  @media(max-width:480px){
+    .hero{padding:44px 0 30px;}
+    .hero h1{font-size:34px;}
+    .new-price{font-size:42px;}
+    .countdown .box{min-width:54px; padding:10px 10px;}
+    .sticky-cta .txt{display:none;}
+    .elo-logo-word span{font-size:40px;}
+  }
+
+  /* FOUNDER BANNER */
+  .founder-banner{
+    background:radial-gradient(ellipse at top, rgba(165,57,90,0.22), transparent 65%), var(--bg);
+    padding:56px 0 44px;
+    text-align:center;
+    border-bottom:1px solid #1c1214;
+  }
+  .elo-logo-big{margin-bottom:36px;}
+  .elo-logo-word{
+    font-family:'Poppins',sans-serif; font-size:13px; letter-spacing:5px;
+    text-transform:uppercase; color:var(--muted-gray); margin-top:16px;
+  }
+  .elo-logo-word span{
+    display:block; font-family:'Playfair Display',serif; font-size:56px;
+    letter-spacing:1px; color:var(--ink); font-weight:600; margin-top:2px; font-style:italic;
+  }
+  .elo-logo-tag{
+    display:inline-block; margin-top:16px; border:1px solid var(--line-pink-bright);
+    color:var(--rose-eyebrow); font-size:10.5px; letter-spacing:2.5px; text-transform:uppercase;
+    padding:7px 16px; border-radius:2px;
+  }
+  .duo-photos{display:flex; justify-content:center; gap:40px; margin:8px 0 32px; flex-wrap:wrap;}
+  .duo-photo{display:flex; flex-direction:column; align-items:center; width:140px;}
+  .ph-circle{
+    width:100px; height:100px; border-radius:50%;
+    border:1.5px solid var(--line-pink-bright);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display',serif; font-style:italic; font-size:26px; color:var(--rose-soft);
+    background:linear-gradient(160deg, #1c0f12, #0b0708);
+    margin-bottom:12px; overflow:hidden;
+  }
+  .ph-circle img{width:100%; height:100%; object-fit:cover; object-position:50% 12%; border-radius:50%;}
+  .ph-name{font-family:'Poppins',sans-serif; font-size:12.5px; font-weight:600; color:var(--ink); letter-spacing:.5px;}
+  .ph-role{font-family:'Poppins',sans-serif; font-size:10.5px; color:var(--muted-gray); letter-spacing:.5px; margin-top:3px; text-align:center;}
+  .privilege-text{
+    max-width:560px; margin:0 auto; font-size:15.5px; color:var(--body-gray);
+    font-style:italic; font-family:'Playfair Display',serif; line-height:1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="founder-banner">
+  <div class="wrap">
+    <div class="elo-logo-big">
+      <svg width="76" height="76" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto; display:block;">
+        <defs>
+          <linearGradient id="eloGradTop" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#e0a3b6"/>
+            <stop offset="1" stop-color="#a5395a"/>
+          </linearGradient>
+        </defs>
+        <circle cx="17" cy="22" r="11" fill="none" stroke="url(#eloGradTop)" stroke-width="2.2"/>
+        <circle cx="27" cy="22" r="11" fill="none" stroke="url(#eloGradTop)" stroke-width="2.2"/>
+      </svg>
+      <div class="elo-logo-word">Protocolo<span>Elo</span></div>
+      <div class="elo-logo-tag">Eixo Intestino-Cérebro</div>
+    </div>
+
+    <div class="duo-photos">
+      <div class="duo-photo">
+        <div class="ph-circle">TH</div>
+        <div class="ph-name">Dra. Thalma Haum</div>
+        <div class="ph-role">Fisiologia & Modulação Intestinal</div>
+      </div>
+      <div class="duo-photo">
+        <div class="ph-circle">PP</div>
+        <div class="ph-name">Polyana Pontes</div>
+        <div class="ph-role">Mente & Emoções</div>
+      </div>
+    </div>
+
+    <p class="privilege-text">Este projeto está sendo iniciado aqui, com vocês. Antes do mundo conhecer o Protocolo Elo, você tem a oportunidade de ser uma das primeiras a viver essa experiência. Sinta-se privilegiada.</p>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="logo-mark"><span class="flame">🔥</span><span>Máquina de Queimar 10.0</span></div>
+    <div class="badge">Vagas Extremamente Limitadas</div>
+    <h1>Protocolo <em>Elo.</em></h1>
+    <div class="subline">O elo entre o seu intestino e o seu cérebro</div>
+    <p style="font-size:13.5px; letter-spacing:.5px; color:var(--muted-gray); margin-bottom:20px;">90 dias · 2 especialistas · 12 encontros individuais</p>
+    <p>Pela primeira vez, um acompanhamento assim é liberado.</p>
+    <p>Você já tem o método. Agora você vai ter <strong>a Dra. Thalma Haum ajustando pessoalmente a sua fisiologia</strong> e <strong>a Polyana Pontes conduzindo a sua mente</strong> — juntas, lado a lado com você, durante os próximos 90 dias.</p>
+    <p>Seja qual for o motivo que hoje trava, atrasa ou sabota o seu resultado na estratégia carnívora, nós duas vamos entrar junto com você e ajustar até funcionar.</p>
+    <a href="https://wa.me/5561996365567?text=Quero%20meu%20protocolo%20elo" target="_blank" rel="noopener" class="cta-btn">Quero Fechar Meu Elo</a>
+    <div class="micro">Vagas extremamente limitadas · Oferta expira em 48 horas</div>
+  </div>
+</div>
+
+<div class="features">
+  <div class="wrap">
+    <div class="feature"><span class="ic">🧬</span><span>Ajuste Fisiológico Individual</span></div>
+    <div class="feature"><span class="ic">🩸</span><span>Exames & Biomarcadores</span></div>
+    <div class="feature"><span class="ic">🧠</span><span>Reprogramação Emocional</span></div>
+    <div class="feature"><span class="ic">📞</span><span>Canal Direto de Suporte</span></div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="elo-icon">
+    <svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto; display:block;">
+      <defs>
+        <linearGradient id="eloGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#e0a3b6"/>
+          <stop offset="1" stop-color="#a5395a"/>
+        </linearGradient>
+      </defs>
+      <circle cx="17" cy="22" r="11" fill="none" stroke="url(#eloGrad)" stroke-width="2.2"/>
+      <circle cx="27" cy="22" r="11" fill="none" stroke="url(#eloGrad)" stroke-width="2.2"/>
+    </svg>
+  </div>
+  <div class="elo-tag">Do que se trata?</div>
+  <h3>O elo que faltava entre o seu intestino e o seu cérebro.</h3>
+  <p>O Protocolo Elo trabalha diretamente o eixo intestino-cérebro — a conexão que a ciência mostra ser exatamente o que trava (ou libera) o seu resultado. A Dra. Thalma Haum cuida do seu intestino: modulação e harmonização fisiológica. A Polyana Pontes cuida do seu cérebro: mente e emoções. Duas frentes, ao mesmo tempo, fechando o mesmo elo — o que a estratégia carnívora sozinha não sustenta.</p>
+  <p class="divide">É a primeira vez que esse acompanhamento existe, e não será reaberto depois.</p>
+</div>
+
+<div class="stat">
+  <div class="num">12</div>
+  <div class="label">Encontros individuais em 90 dias</div>
+</div>
+
+<div class="wrap">
+  <div class="quote">
+    <p>"A maioria das minhas alunas não trava porque a carnívora não funciona. Trava porque ninguém ajustou a fisiologia dela individualmente, ou porque o cérebro ainda está sabotando o corpo. É exatamente aí que a gente entra."</p>
+    <div class="attrib">Dra. Thalma Haum</div>
+  </div>
+
+  <section>
+    <h2 class="section-title">Você reconhece isso?</h2>
+    <p class="section-lede">Você aprendeu o método. Sabe o que fazer. E ainda assim, alguma coisa trava — e não é falta de esforço.</p>
+
+    <div class="pain-item">
+      <span class="n">01</span>
+      <h4>Fisiologia Não Ajustada Individualmente</h4>
+      <p>Hormônios, biomarcadores e histórico de cada mulher são diferentes. Sem um protocolo individual, o corpo resiste — mesmo fazendo tudo certo.</p>
+    </div>
+    <div class="pain-item">
+      <span class="n">02</span>
+      <h4>Autossabotagem Emocional</h4>
+      <p>Ansiedade, compulsão, medo de errar. A mente sabota antes do corpo ter a chance de responder ao protocolo.</p>
+    </div>
+  </section>
+
+  <section id="oferta">
+    <h2 class="section-title">O que está incluso</h2>
+    <p class="section-lede">Dois acompanhamentos individuais, simultâneos, desenhados para blindar o seu resultado por dentro e por fora.</p>
+
+    <div class="track">
+      <div class="track-head">
+        <span class="track-tag">Corpo</span>
+      </div>
+      <h3>Acompanhamento Fisiológico Individual</h3>
+      <div class="who">Conduzido pessoalmente pela Dra. Thalma Haum · 3 meses · 1 encontro mensal</div>
+      <ul>
+        <li>Anamnese completa individual</li>
+        <li>Avaliação de exames sanguíneos e biomarcadores</li>
+        <li>Desenvolvimento de protocolo de harmonização fisiológica personalizado</li>
+        <li>1 encontro mensal, durante os 3 meses, para definir, ajustar e concluir o protocolo</li>
+        <li>Ajuste de qualquer fator que esteja travando, atrasando ou dificultando a estratégia carnívora</li>
+      </ul>
+    </div>
+
+    <div class="track">
+      <div class="track-head">
+        <span class="track-tag">Mente</span>
+      </div>
+      <h3>Acompanhamento Emocional Individual</h3>
+      <div class="who">Conduzido pessoalmente por Polyana Pontes, mentora de mulheres · 3 meses · 3 encontros mensais</div>
+      <ul>
+        <li>9 encontros individuais (3 por mês, durante os 3 meses)</li>
+        <li>Canal direto de suporte com a Polyana entre um encontro e outro</li>
+        <li>Ferramentas emocionais específicas de reprogramação mental</li>
+        <li>Condução ativa até o objetivo, com estratégias práticas de mudança de comportamento</li>
+        <li>Trabalho direto sobre autossabotagem, ansiedade e compulsão</li>
+      </ul>
+    </div>
+
+    <div class="track-total">12 Encontros Individuais · 2 Especialistas · 90 Dias de Protocolo Elo</div>
+
+    <div class="scarcity-note">
+      <strong>Atenção:</strong> por serem acompanhamentos 100% individuais, o número de vagas é limitado pela agenda real da Dra. Thalma Haum e da Polyana Pontes — não conseguiremos atender todas as interessadas. As vagas serão preenchidas por ordem de inscrição: quem garantir a vaga primeiro, garante o Elo.
+    </div>
+  </section>
+</div>
+
+<div class="price-block">
+  <div class="wrap" style="padding:0;">
+    <div class="badge">Condição Exclusiva · Apenas 48 Horas</div>
+    <h2>Feche o elo. Feche o resultado.</h2>
+    <div class="old-price">De R$ 8.000</div>
+    <div class="new-price">R$ 3.987<sup>,00</sup></div>
+    <div class="price-note">Somente nas próximas 48 horas</div>
+
+    <div class="countdown" id="countdown">
+      <div class="box"><div class="val" id="cd-h">48</div><div class="lbl">Horas</div></div>
+      <div class="box"><div class="val" id="cd-m">00</div><div class="lbl">Min</div></div>
+      <div class="box"><div class="val" id="cd-s">00</div><div class="lbl">Seg</div></div>
+    </div>
+
+    <a href="https://wa.me/5561996365567?text=Quero%20meu%20protocolo%20elo" target="_blank" rel="noopener" class="cta-btn">Quero Garantir Meu Elo</a>
+    <div class="micro">Vagas extremamente limitadas · Preenchimento por ordem de inscrição</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="reasons">
+    <h2 class="section-title">Por que você não pode perder essa oportunidade?</h2>
+
+    <div class="reason">
+      <div class="r-n">1</div>
+      <div><h4>Nunca foi oferecido antes — e não será reaberto depois</h4><p>Esta é a primeira vez que a Dra. Thalma Haum e a Polyana Pontes conduzem esse acompanhamento juntas.</p></div>
+    </div>
+    <div class="reason">
+      <div class="r-n">2</div>
+      <div><h4>É a única vez que esse acompanhamento será oferecido por esse valor</h4><p>Depois desse prazo promocional de 48 horas, o Protocolo Elo volta ao valor cheio de R$ 8.000 — essa condição de R$ 3.987 não será repetida.</p></div>
+    </div>
+    <div class="reason">
+      <div class="r-n">3</div>
+      <div><h4>Vagas limitadas por capacidade real, não por escassez artificial</h4><p>Acompanhamento individual, não coletivo. Não vamos conseguir atender todas as interessadas — a agenda das duas profissionais é finita. Quem garante a vaga primeiro, leva.</p></div>
+    </div>
+    <div class="reason">
+      <div class="r-n">4</div>
+      <div><h4>Protege o investimento que você já fez</h4><p>Você já investiu no método. Esse acompanhamento existe para garantir que esse investimento vire resultado — e não vire mais uma tentativa que travou no meio do caminho.</p></div>
+    </div>
+    <div class="reason">
+      <div class="r-n">5</div>
+      <div><h4>Corpo e mente resolvidos ao mesmo tempo</h4><p>A maioria dos protocolos ataca só o físico. Aqui, o emocional é tratado junto — na mesma janela de 90 dias — para o resultado não depender só de força de vontade.</p></div>
+    </div>
+    <div class="reason">
+      <div class="r-n">6</div>
+      <div><h4>Preço promocional só nas próximas 48 horas</h4><p>De R$ 8.000 por R$ 3.987,00. Depois desse prazo, a condição volta ao valor cheio — ou deixa de existir.</p></div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  Protocolo Elo · Vagas e prazo limitados
+</footer>
+
+<div class="sticky-cta">
+  <div class="wrap">
+    <span class="txt">De R$8.000 por R$3.987 · 48h · Vagas limitadas</span>
+    <a href="https://wa.me/5561996365567?text=Quero%20meu%20protocolo%20elo" target="_blank" rel="noopener">Garantir Elo</a>
+  </div>
+</div>
+
+<script>
+  // EDITE esta data/hora para o prazo real de encerramento da oferta (fuso: horário local do visitante).
+  var DATA_LIMITE = new Date();
+  DATA_LIMITE.setHours(DATA_LIMITE.getHours() + 48);
+
+  function pad(n){ return n.toString().padStart(2,'0'); }
+
+  function atualizarContador(){
+    var agora = new Date();
+    var diff = DATA_LIMITE - agora;
+    if(diff <= 0){
+      document.getElementById('cd-h').textContent = '00';
+      document.getElementById('cd-m').textContent = '00';
+      document.getElementById('cd-s').textContent = '00';
+      return;
+    }
+    var h = Math.floor(diff / (1000*60*60));
+    var m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    var s = Math.floor((diff % (1000*60)) / 1000);
+    document.getElementById('cd-h').textContent = pad(h);
+    document.getElementById('cd-m').textContent = pad(m);
+    document.getElementById('cd-s').textContent = pad(s);
+  }
+  atualizarContador();
+  setInterval(atualizarContador, 1000);
+</script>
+
+</body>
+</html>
